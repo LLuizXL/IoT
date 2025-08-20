@@ -121,113 +121,113 @@ Pergunta perguntas[30]={
 };
 
 // ----------------------- Controle do Quiz ---------------------------- //
-int perguntasSorteadas[5];
-int perguntasRespondidas = 0;
-int acertos = 0;
-int erros = 0;
-int indiceAtual = 0;
-bool jogoAtivo = false;
+// int perguntasSorteadas[5];
+// int perguntasRespondidas = 0;
+// int acertos = 0;
+// int erros = 0;
+// int indiceAtual = 0;
+// bool jogoAtivo = false;
 
 
-void sorteiaPergunta() {
-  for (int i = 0; i < 5; i++){
-    int sorteada;
-    bool repetida;
-    do{sorteada = random(0, 30);
-    repetida = false;
-    for(int j = 0; j < i; j++){
-      if(perguntasSorteadas[j] == sorteada){
-        repetida = true;
-        break;
-      }
+// void sorteiaPergunta() {
+//   for (int i = 0; i < 5; i++){
+//     int sorteada;
+//     bool repetida;
+//     do{sorteada = random(0, 30);
+//     repetida = false;
+//     for(int j = 0; j < i; j++){
+//       if(perguntasSorteadas[j] == sorteada){
+//         repetida = true;
+//         break;
+//       }
 
-    }
-    } while(repetida);
-    perguntasSorteadas[i] = sorteada;
-  }
-}
+//     }
+//     } while(repetida);
+//     perguntasSorteadas[i] = sorteada;
+//   }
+// }
 
-void mostrarPergunta(){
-  indiceAtual = perguntasSorteadas[perguntasRespondidas];
-  String texto = String(perguntas[indiceAtual].texto);
+// void mostrarPergunta(){
+//   indiceAtual = perguntasSorteadas[perguntasRespondidas];
+//   String texto = String(perguntas[indiceAtual].texto);
 
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Pergunta ");
-  lcd.print(perguntasRespondidas + 1);
-  lcd.print(":");
-
-
-  int len = texto.length();
-  if (len <= 16) {
-    lcd.setCursor(0,1);
-    lcd.print(texto);
-  } else {
-    for (int pos = 0; pos <= len - 16; pos++) {
-      lcd.setCursor(0, 1);
-      lcd.print(texto.substring(pos, pos + 16));
-      delay(400);
-    }
-  }
-}
-
-void verificarResposta(bool respostaUsuario) {
-  bool correta = (respostaUsuario == perguntas[indiceAtual].resposta);
-if(correta) {
-  digitalWrite(LED_GREEN, HIGH);
-  digitalWrite(LED_RED, LOW);
-  acertos++;
-  client.publish("luizG/resp_enviada", "Correta");
-} else{
-  digitalWrite(LED_GREEN, LOW);
-  digitalWrite(LED_RED, HIGH);
-  erros++;
-  client.publish("luizG/resp_enviada", "Errada");
-}
-delay(1500);
-digitalWrite(LED_RED, LOW);
-digitalWrite(LED_GREEN, LOW);
-
-perguntasRespondidas++;
-
-if(perguntasRespondidas >= 5){
-  float media = (acertos / 5) * 100;
-  char resultado[80];
-  sprintf(resultado, "Acertos:%d Erros:%d Media:%1.f%%", acertos, erros, media);
-  client.publish("luizG/resultado", resultado);
-
-  String status = (media >= 60) ? "Aprovado" : "Reprovado";
+//   lcd.clear();
+//   lcd.setCursor(0, 0);
+//   lcd.print("Pergunta ");
+//   lcd.print(perguntasRespondidas + 1);
+//   lcd.print(":");
 
 
-  // ----- MOSTRAR RESULTADOS NA TELA POR 5s ----- //
+//   int len = texto.length();
+//   if (len <= 16) {
+//     lcd.setCursor(0,1);
+//     lcd.print(texto);
+//   } else {
+//     for (int pos = 0; pos <= len - 16; pos++) {
+//       lcd.setCursor(0, 1);
+//       lcd.print(texto.substring(pos, pos + 16));
+//       delay(400);
+//     }
+//   }
+// }
 
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("Acertos: ");
-  lcd.print(acertos);
-  lcd.print("Erros: ");
-  lcd.print(erros);
+// void verificarResposta(bool respostaUsuario) {
+//   bool correta = (respostaUsuario == perguntas[indiceAtual].resposta);
+// if(correta) {
+//   digitalWrite(LED_GREEN, HIGH);
+//   digitalWrite(LED_RED, LOW);
+//   acertos++;
+//   client.publish("luizG/resp_enviada", "Correta");
+// } else{
+//   digitalWrite(LED_GREEN, LOW);
+//   digitalWrite(LED_RED, HIGH);
+//   erros++;
+//   client.publish("luizG/resp_enviada", "Errada");
+// }
+// delay(1500);
+// digitalWrite(LED_RED, LOW);
+// digitalWrite(LED_GREEN, LOW);
 
-  lcd.setCursor(0, 1);
-  lcd.print("Media: ");
-  lcd.print(media,1);
-  lcd.print("%");
+// perguntasRespondidas++;
 
-  delay(5000);
+// if(perguntasRespondidas >= 5){
+//   float media = (acertos / 5) * 100;
+//   char resultado[80];
+//   sprintf(resultado, "Acertos:%d Erros:%d Media:%1.f%%", acertos, erros, media);
+//   client.publish("luizG/resultado", resultado);
 
-  // Reiniciar o Game maroto
-  jogoAtivo = false;
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("Quiz IoT - v1.0");
-  lcd.setCursor(0,1);
-  lcd.print("Iniciar? ");
-  return;
+//   String status = (media >= 60) ? "Aprovado" : "Reprovado";
 
-}
 
-mostrarPergunta();
-}
+//   // ----- MOSTRAR RESULTADOS NA TELA POR 5s ----- //
+
+//   lcd.clear();
+//   lcd.setCursor(0, 0);
+//   lcd.print("Acertos: ");
+//   lcd.print(acertos);
+//   lcd.print("Erros: ");
+//   lcd.print(erros);
+
+//   lcd.setCursor(0, 1);
+//   lcd.print("Media: ");
+//   lcd.print(media,1);
+//   lcd.print("%");
+
+//   delay(5000);
+
+//   // Reiniciar o Game maroto
+//   jogoAtivo = false;
+//   lcd.clear();
+//   lcd.setCursor(0,0);
+//   lcd.print("Quiz IoT - v1.0");
+//   lcd.setCursor(0,1);
+//   lcd.print("Iniciar? ");
+//   return;
+
+// }
+
+// mostrarPergunta();
+// }
 
 
 // --------- Setup ----------
